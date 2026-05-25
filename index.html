@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>TÜV NORD Taiwan-TTQS 企業版評核資料列表</title>
+<style>
+body{font-family:Segoe UI,Arial;background:#f4f8fb;margin:0}
+.header{background:#1f4e79;color:white;padding:16px;font-size:20px;font-weight:bold}
+.container{padding:20px}
+.dashboard{display:flex;gap:20px;margin-bottom:20px}
+.card{flex:1;background:white;padding:15px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
+table{width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden}
+th{background:#1f6fb2;color:white;padding:8px}
+td{border-bottom:1px solid #ddd;padding:6px;vertical-align:top}
+tr:hover{background:#eef5ff}
+input{width:100%;padding:4px}
+.link{background:#2b7de9;color:white;border:none;padding:4px 8px;border-radius:4px}
+.missing{background:#ffe5e5}
+.high{background:#e3f7e3}
+.actions{margin-bottom:10px}
+button{margin-right:5px}
+.section{background:#d6e8ff;font-weight:bold}
+th:last-child, td:last-child { width:80px; text-align:center; }
+.score-input { width:60px; text-align:center; }
+.add-hint{color:#888;font-size:12px;cursor:pointer;margin-top:4px}
+.link-row{margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="header">TÜV NORD Taiwan-TTQS 企業版</div>
+<div class="container">
+<div class="dashboard">
+<div class="card">總分<br><b id="total"></b></div>
+<div class="card">達成率<br><b id="percent"></b>%</div>
+<div class="card">等級<br><b id="level"></b></div>
+</div>
+<div class="actions">
+<button onclick="save()">儲存</button>
+<button onclick="load()">載入</button>
+<button onclick="window.print()">列印</button>
+</div>
+<table>
+<thead>
+<tr><th>指標</th><th>說明</th><th>佐證</th><th>分數</th></tr>
+</thead>
+<tbody id="tb"></tbody>
+</table>
+</div>
+<script>
+const indicators=[
+{cat:'Plan（計畫）',name:'1. 組織願景/使命/策略揭露與需求訂定'},
+{cat:'Plan（計畫）',name:'2. 訓練政策、目標與高階主管承諾'},
+{cat:'Plan（計畫）',name:'3. PDDRO訓練體系與核心訓練類別'},
+{cat:'Plan（計畫）',name:'4. 訓練品質管理系統文件化'},
+{cat:'Plan（計畫）',name:'5. 訓練規劃與經營目標連結'},
+{cat:'Plan（計畫）',name:'6. 訓練單位與主管發展能力'},
+{cat:'Design（設計）',name:'7. 職能分析與訓練需求'},
+{cat:'Design（設計）',name:'8. 訓練方案設計'},
+{cat:'Design（設計）',name:'9. 利益關係人參與'},
+{cat:'Design（設計）',name:'10. 訓練資源採購與遴選'},
+{cat:'Design（設計）',name:'11. 訓練計畫與需求結合'},
+{cat:'Do（執行）',name:'12. 訓練執行符合計畫'},
+{cat:'Do（執行）',name:'13. 學習成果移轉與應用'},
+{cat:'Do（執行）',name:'14. 訓練資料建檔與系統化'},
+{cat:'Review（查核）',name:'15. 評估報告與綜合分析'},
+{cat:'Review（查核）',name:'16. 異常管控與矯正處理'},
+{cat:'Outcome（成果）',name:'17. 訓練成果多元評估'},
+{cat:'Outcome（成果）',name:'18. 高階主管支持與評價'},
+{cat:'Outcome（成果）',name:'19. 訓練成果與績效'}
+];
+
+let data=indicators.map(d=>({cat:d.cat,name:d.name,rows:[{desc:"",links:[],score:0}]}));
+
+function render(){
+const tb=document.getElementById('tb');tb.innerHTML='';
+let lastCat="";
+ data.forEach((d,i)=>{
+ if(d.cat!==lastCat){
+ let sec=document.createElement('tr');
+ sec.innerHTML=`<td colspan=4 class='section'>${d.cat}</td>`;
+ tb.appendChild(sec);
+ lastCat=d.cat;}
+ d.rows.forEach((r,rowIndex)=>{
+ let tr=document.createElement('tr');
+ let firstCell='';
+ if(rowIndex===0){ firstCell=`<td rowspan="${d.rows.length}">${d.name}</td>`; }
+ tr.innerHTML=`
+ ${firstCell}
+ <td><input value="${r.desc}" onchange="updateDesc(${i},${rowIndex},this.value)"></td>
+ <td id="l${i}_${rowIndex}"></td>
+ <td><input class="score-input" type="number" min=0 max=5 value=${r.score} onchange="setScore(${i},${rowIndex},this.value)"></td>`;
+ tb.appendChild(tr);
+ renderLinks(i,rowIndex);
+ });
+ });
+ calc();}
+
+function renderLinks(i,rowIndex){
+let box=document.getElementById(`l${i}_${rowIndex}`);
+let row=data[i].rows[rowIndex];
+box.innerHTML='';
+
+// ✅ 只顯示「顯示名稱」，不顯示URL
+row.links.forEach((l,j)=>{
+ let wrap=document.createElement('div');
+ wrap.className='link-row';
+
+ let a=document.createElement('a');
+ a.href=l.url;
+ a.target='_blank';
+ a.innerHTML=`<button class=link>${l.label}</button>`;
+
+ let edit=document.createElement('button');edit.innerText='編輯';
+ edit.onclick=()=>{
+   const newUrl=prompt('修改URL',l.url);
+   if(!newUrl) return;
+   const newLabel=prompt('修改名稱',l.label);
+   if(!newLabel) return;
+   row.links[j]={url:newUrl,label:newLabel};
+   render();
+ };
+
+ let del=document.createElement('button');del.innerText='刪除';
+ del.onclick=()=>{row.links.splice(j,1);render()};
+
+ wrap.appendChild(a);
+ wrap.appendChild(edit);
+ wrap.appendChild(del);
+ box.appendChild(wrap);
+});
+
+let hint=document.createElement('div');
+hint.className='add-hint';
+hint.textContent='(新增連結)';
+hint.onclick=()=>{
+ const url=prompt('輸入URL'); if(!url) return;
+ const label=prompt('顯示名稱'); if(!label) return;
+ row.links.push({url,label});
+ render();
+};
+box.appendChild(hint);
+}
+
+function updateDesc(i,rowIndex,val){ data[i].rows[rowIndex].desc=val; }
+function setScore(i,rowIndex,v){ data[i].rows[rowIndex].score=Math.max(0,Math.min(5,Number(v))); calc(); }
+
+function calc(){
+let total=0;
+data.forEach(d=>d.rows.forEach(r=>total+=r.score));
+let max=data.reduce((s,d)=>s+d.rows.length*5,0);
+let percent=Math.round(total/max*100||0);
+ document.getElementById('total').innerText=total;
+ document.getElementById('percent').innerText=percent;
+ document.getElementById('level').innerText=
+ percent>=85?'金牌':percent>=70?'銀牌':percent>=60?'銅牌':'未達標';}
+
+function save(){localStorage.setItem('ttqs',JSON.stringify(data));alert('已存');}
+function load(){let d=localStorage.getItem('ttqs');if(d){data=JSON.parse(d);render();}}
+
+render();
+</script>
+</body>
+</html>
