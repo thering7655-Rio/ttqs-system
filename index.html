@@ -131,14 +131,21 @@ row.links.forEach((l,j)=>{
  a.innerHTML=`<button class=link>${l.label}</button>`;
 
  let edit=document.createElement('button');edit.innerText='編輯';
- edit.onclick=()=>{
-   const newUrl=prompt('修改URL',l.url);
-   if(!newUrl) return;
-   const newLabel=prompt('修改名稱',l.label);
-   if(!newLabel) return;
-   row.links[j]={url:newUrl,label:newLabel};
-   load();
- };
+edit.onclick=()=>{
+  const newUrl = prompt('修改URL', l.url);
+  if(newUrl === null) return;  // ✅ 只有取消才終止
+
+  const newLabel = prompt('修改名稱', l.label);
+  if(newLabel === null) return;
+
+  row.links[j] = {
+    url: newUrl.trim(),
+    label: newLabel.trim()
+  };
+
+  save();   // ✅ 加這行（關鍵）
+  render(); // ✅ 再重新畫面
+};
 
  let del=document.createElement('button');del.innerText='刪除';
  del.onclick=()=>{row.links.splice(j,1);render()};
