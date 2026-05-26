@@ -191,12 +191,15 @@ let percent=Math.round(total/max*100||0);
 
 
 window.save = async function(){
+  console.log("🔥 save有跑");
+
   await setDoc(doc(db, "ttqs", "main"), {
     data: data
   });
+
   console.log("✅ 已同步雲端");
 };
-
+``
 
 window.load = async function(){
   const docSnap = await getDoc(doc(db, "ttqs", "main"));
