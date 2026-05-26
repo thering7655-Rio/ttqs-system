@@ -196,13 +196,7 @@ window.save = async function(){window  await setDoc(doc(db, "ttqs", "main"), {
 }
 
 ``
-window.save = async load(){
-  const docSnap = await getDoc(doc(db, "ttqs", "main"));
-  if(docSnap.exists()){
-    data = docSnap.data().data;
-    render();
-  }
-}
+function load(){let d=localStorage.getItem('ttqs');if(d){data=JSON.parse(d);render();}}
 
 
 render();
