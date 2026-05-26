@@ -155,8 +155,11 @@ hint.textContent='(新增連結)';
 hint.onclick=()=>{
  const url=prompt('輸入URL'); if(!url) return;
  const label=prompt('顯示名稱'); if(!label) return;
- row.links.push({url,label});
- render();
+
+row.links.push({url,label});
+render();
+save(); // ✅ 新增證據就存
+``
 };
 box.appendChild(hint);
 }
@@ -167,7 +170,13 @@ function updateDesc(i,rowIndex,val){
   save(); // ✅ 自動存
 }
 
-function setScore(i,rowIndex,v){ data[i].rows[rowIndex].score=Math.max(0,Math.min(5,Number(v))); calc(); }
+
+function setScore(i,rowIndex,v){
+  data[i].rows[rowIndex].score = Math.max(0,Math.min(5,Number(v)));
+  calc();
+  save(); // ✅ 分數變更就存
+}
+
 
 function calc(){
 let total=0;
