@@ -161,7 +161,12 @@ hint.onclick=()=>{
 box.appendChild(hint);
 }
 
-function updateDesc(i,rowIndex,val){ data[i].rows[rowIndex].desc=val; }
+
+function updateDesc(i,rowIndex,val){
+  data[i].rows[rowIndex].desc = val;
+  save(); // ✅ 自動存
+}
+
 function setScore(i,rowIndex,v){ data[i].rows[rowIndex].score=Math.max(0,Math.min(5,Number(v))); calc(); }
 
 function calc(){
@@ -174,8 +179,21 @@ let percent=Math.round(total/max*100||0);
  document.getElementById('level').innerText=
  percent>=85?'金牌':percent>=70?'銀牌':percent>=60?'銅牌':'未達標';}
 
-function save(){localStorage.setItem('ttqs',JSON.stringify(data));alert('已存');}
-function load(){let d=localStorage.getItem('ttqs');if(d){data=JSON.parse(d);render();}}
+async function save(){
+  await setDoc(doc(db, "ttqs", "main"), {
+    data: data
+  });
+  console.log("✅ 已同步雲端");
+}
+``
+async function load(){
+  const docSnap = await getDoc(doc(db, "ttqs", "main"));
+  if(docSnap.exists()){
+    data = docSnap.data().data;
+    render();
+  }
+}
+
 
 render();
 </script>
