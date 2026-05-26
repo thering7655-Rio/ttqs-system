@@ -128,7 +128,10 @@ row.links.forEach((l,j)=>{
  let a=document.createElement('a');
  a.href=l.url;
  a.target='_blank';
- a.innerHTML=`<button class=link>${l.label}</button>`;
+ 
+a.textContent = l.label;
+a.className = "link
+
 
  let edit=document.createElement('button');edit.innerText='編輯';
 edit.onclick = async () => {
