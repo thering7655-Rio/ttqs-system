@@ -168,14 +168,14 @@ box.appendChild(hint);
 window.updateDesc = function(i,rowIndex,val){
   data[i].rows[rowIndex].desc = val;
   save(); // ✅ 自動存
-}
+};
 
 
 window.setScore = function(i,rowIndex,v){
   data[i].rows[rowIndex].score = Math.max(0,Math.min(5,Number(v)));
   calc();
   save(); // ✅ 分數變更就存
-}
+};
 
 
 function calc(){
