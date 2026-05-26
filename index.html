@@ -137,7 +137,7 @@ row.links.forEach((l,j)=>{
    const newLabel=prompt('修改名稱',l.label);
    if(!newLabel) return;
    row.links[j]={url:newUrl,label:newLabel};
-   render();
+   load();
  };
 
  let del=document.createElement('button');del.innerText='刪除';
