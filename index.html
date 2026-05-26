@@ -168,9 +168,9 @@ hint.onclick=()=>{
  const label=prompt('顯示名稱'); if(!label) return;
 
 
+
 row.links.push({url,label});
-render();
-save(); // ✅ 新增證據就存
+await save();
 };
 box.appendChild(hint);
 }
