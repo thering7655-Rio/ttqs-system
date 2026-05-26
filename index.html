@@ -201,8 +201,20 @@ window.save = async function(){
 };
 
 
-window.load = function(){
-  onSnapshot(doc(db, "ttqs", "main"), (docSnap) => {
+
+window.load = async function(){
+
+  const ref = doc(db, "ttqs", "main");
+
+  // ✅ 如果文件不存在 → 先建立
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref, { data: data });
+    console.log("🆕 初始化資料建立");
+  }
+
+  // ✅ 即時同步（關鍵）
+  onSnapshot(ref, (docSnap) => {
     if(docSnap.exists()){
       data = docSnap.data().data;
       render();
@@ -210,6 +222,7 @@ window.load = function(){
     }
   });
 };
+
 
 
 window.onload = function(){
