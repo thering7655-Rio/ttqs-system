@@ -156,10 +156,10 @@ hint.onclick=()=>{
  const url=prompt('輸入URL'); if(!url) return;
  const label=prompt('顯示名稱'); if(!label) return;
 
+
 row.links.push({url,label});
 render();
 save(); // ✅ 新增證據就存
-``
 };
 box.appendChild(hint);
 }
@@ -199,7 +199,6 @@ window.save = async function(){
 
   console.log("✅ 已同步雲端");
 };
-``
 
 window.load = async function(){
   const docSnap = await getDoc(doc(db, "ttqs", "main"));
