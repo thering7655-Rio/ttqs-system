@@ -189,14 +189,23 @@ let percent=Math.round(total/max*100||0);
  percent>=85?'金牌':percent>=70?'銀牌':percent>=60?'銅牌':'未達標';}
 
 
-window.save = async function(){window  await setDoc(doc(db, "ttqs", "main"), {
+
+window.save = async function(){
+  await setDoc(doc(db, "ttqs", "main"), {
     data: data
   });
   console.log("✅ 已同步雲端");
-}
+};
 
-``
-function load(){let d=localStorage.getItem('ttqs');if(d){data=JSON.parse(d);render();}}
+
+window.load = async function(){
+  const docSnap = await getDoc(doc(db, "ttqs", "main"));
+  if(docSnap.exists()){
+    data = docSnap.data().data;
+    render();
+  }
+};
+
 
 
 render();
