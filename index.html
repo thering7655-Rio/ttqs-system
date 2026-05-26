@@ -120,7 +120,6 @@ let box=document.getElementById(`l${i}_${rowIndex}`);
 let row=data[i].rows[rowIndex];
 box.innerHTML='';
 
-// ✅ 只顯示「顯示名稱」，不顯示URL
 row.links.forEach((l,j)=>{
  let wrap=document.createElement('div');
  wrap.className='link-row';
@@ -128,13 +127,12 @@ row.links.forEach((l,j)=>{
  let a=document.createElement('a');
  a.href=l.url;
  a.target='_blank';
- 
-a.textContent = l.label;
-a.className = "link
+ a.textContent = l.label;
+ a.className = "link";
 
-
- let edit=document.createElement('button');edit.innerText='編輯';
-edit.onclick = async () => {
+ let edit=document.createElement('button');
+ edit.innerText='編輯';
+ edit.onclick = async () => {
 
   const newUrl = prompt('修改URL', l.url);
   if(newUrl === null) return;
@@ -142,28 +140,26 @@ edit.onclick = async () => {
   const newLabel = prompt('修改名稱', l.label);
   if(newLabel === null) return;
 
-  // ✅ 直接 update Firebase（不要先改 local）
   const ref = doc(db, "ttqs", "main");
-
   const snap = await getDoc(ref);
   if(!snap.exists()) return;
 
   let newData = snap.data().data;
 
-  // ✅ 找到同一個位置更新
   newData[i].rows[rowIndex].links[j] = {
     url: newUrl.trim(),
     label: newLabel.trim()
   };
 
-  // ✅ 寫回 Firebase
   await setDoc(ref, { data: newData });
+ };
 
-  console.log("✅ 已更新");
-};
-
- let del=document.createElement('button');del.innerText='刪除';
- del.onclick=()=>{row.links.splice(j,1);render()};
+ let del=document.createElement('button');
+ del.innerText='刪除';
+ del.onclick = async ()=>{
+   row.links.splice(j,1);
+   await save();
+ };
 
  wrap.appendChild(a);
  wrap.appendChild(edit);
@@ -174,15 +170,14 @@ edit.onclick = async () => {
 let hint=document.createElement('div');
 hint.className='add-hint';
 hint.textContent='(新增連結)';
-hint.onclick=()=>{
+hint.onclick = async ()=>{
  const url=prompt('輸入URL'); if(!url) return;
  const label=prompt('顯示名稱'); if(!label) return;
 
-
-
-row.links.push({url,label});
-await save();
+ row.links.push({url,label});
+ await save();
 };
+
 box.appendChild(hint);
 }
 
