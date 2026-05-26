@@ -131,20 +131,24 @@ row.links.forEach((l,j)=>{
  a.innerHTML=`<button class=link>${l.label}</button>`;
 
  let edit=document.createElement('button');edit.innerText='編輯';
-edit.onclick=()=>{
+edit.onclick = async () => {
+
   const newUrl = prompt('修改URL', l.url);
-  if(newUrl === null) return;  // ✅ 只有取消才終止
+  if(newUrl === null) return;
 
   const newLabel = prompt('修改名稱', l.label);
   if(newLabel === null) return;
 
+  // ✅ 直接修改 data
   row.links[j] = {
     url: newUrl.trim(),
     label: newLabel.trim()
   };
 
-  save();   // ✅ 加這行（關鍵）
-  render(); // ✅ 再重新畫面
+  // ✅ 先存到 Firebase（關鍵）
+  await save();
+
+  // ✅ 不要直接 render（讓 onSnapshot 處理）
 };
 
  let del=document.createElement('button');del.innerText='刪除';
