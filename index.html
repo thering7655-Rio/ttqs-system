@@ -188,14 +188,14 @@ let percent=Math.round(total/max*100||0);
  document.getElementById('level').innerText=
  percent>=85?'金牌':percent>=70?'銀牌':percent>=60?'銅牌':'未達標';}
 
-async function save(){
+window.save = async function(){
   await setDoc(doc(db, "ttqs", "main"), {
     data: data
   });
   console.log("✅ 已同步雲端");
 }
 ``
-async function load(){
+window.save = async load(){
   const docSnap = await getDoc(doc(db, "ttqs", "main"));
   if(docSnap.exists()){
     data = docSnap.data().data;
