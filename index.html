@@ -139,16 +139,24 @@ edit.onclick = async () => {
   const newLabel = prompt('修改名稱', l.label);
   if(newLabel === null) return;
 
-  // ✅ 直接修改 data
-  row.links[j] = {
+  // ✅ 直接 update Firebase（不要先改 local）
+  const ref = doc(db, "ttqs", "main");
+
+  const snap = await getDoc(ref);
+  if(!snap.exists()) return;
+
+  let newData = snap.data().data;
+
+  // ✅ 找到同一個位置更新
+  newData[i].rows[rowIndex].links[j] = {
     url: newUrl.trim(),
     label: newLabel.trim()
   };
 
-  // ✅ 先存到 Firebase（關鍵）
-  await save();
+  // ✅ 寫回 Firebase
+  await setDoc(ref, { data: newData });
 
-  // ✅ 不要直接 render（讓 onSnapshot 處理）
+  console.log("✅ 已更新");
 };
 
  let del=document.createElement('button');del.innerText='刪除';
@@ -201,15 +209,12 @@ let percent=Math.round(total/max*100||0);
 
 
 
+
 window.save = async function(){
-  console.log("🔥 save有跑");
-
-  await setDoc(doc(db, "ttqs", "main"), {
-    data: data
-  });
-
-  console.log("✅ 已同步雲端");
+  const ref = doc(db, "ttqs", "main");
+  await setDoc(ref, { data: data });
 };
+
 
 
 
