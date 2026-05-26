@@ -47,7 +47,26 @@ th:last-child, td:last-child { width:80px; text-align:center; }
 <tbody id="tb"></tbody>
 </table>
 </div>
-<script>
+<script type="module">
+ 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// 🔥 把Firebase設定貼在這
+const firebaseConfig = {
+  apiKey: "AIzaSyBexZiKqb1BsZ33mRG-nqwefZsxvgmeXzY",
+  authDomain: "ttqs-sqy.firebaseapp.com",
+  projectId: "ttqs-sqy",
+  storageBucket: "ttqs-sqy.firebasestorage.app",
+  messagingSenderId: "478368497378",
+  appId: "1:478368497378:web:9b56e18b619abae034a8bb"
+};
+
+// 初始化Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const indicators=[
 {cat:'Plan（計畫）',name:'1. 組織願景/使命/策略揭露與需求訂定'},
 {cat:'Plan（計畫）',name:'2. 訓練政策、目標與高階主管承諾'},
