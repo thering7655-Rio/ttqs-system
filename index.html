@@ -108,7 +108,7 @@ let lastCat="";
  ${firstCell}
  <td><input value="${r.desc}" onchange="updateDesc(${i},${rowIndex},this.value)"></td>
  <td id="l${i}_${rowIndex}"></td>
- <td><input class="score-input" type="number" min=0 max=5 value=${r.score} onchange="setScore(${i},${rowIndex},this.value)"></td>`;
+ <td><input class="score-input" type="number" min=0 max=10 step=0.5 value=${r.score} onchange="setScore(${i},${rowIndex},this.value)"></td>`;
  tb.appendChild(tr);
  renderLinks(i,rowIndex);
  });
@@ -189,16 +189,31 @@ window.updateDesc = function(i,rowIndex,val){
 
 
 window.setScore = function(i,rowIndex,v){
-  data[i].rows[rowIndex].score = Math.max(0,Math.min(5,Number(v)));
+
+  let maxScore = (i === 16) ? 10 : 5;  // ✅ 第17項
+
+  let value = Number(v);
+
+  // ✅ 限制範圍 + 0.5級距
+  value = Math.round(value * 2) / 2;
+
+  data[i].rows[rowIndex].score =
+    Math.max(0, Math.min(maxScore, value));
+
   calc();
-  save(); // ✅ 分數變更就存
+  save();
 };
+
 
 
 function calc(){
 let total=0;
 data.forEach(d=>d.rows.forEach(r=>total+=r.score));
-let max=data.reduce((s,d)=>s+d.rows.length*5,0);
+let max = data.reduce((s,d,i)=>{
+  let per = (i === 16) ? 10 : 5;
+  return s + d.rows.length * per;
+}, 0);
+
 let percent=Math.round(total/max*100||0);
  document.getElementById('total').innerText=total;
  document.getElementById('percent').innerText=percent;
