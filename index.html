@@ -211,7 +211,6 @@ let max = data.reduce((s,d,i)=>{
   return s + d.rows.length * per;
 }, 0);
 
-let percent=Math.round(total/max*100||0);
  document.getElementById('total').innerText=total;
 let level = '';
 if (total >= 53.5 && total <= 63) {
@@ -227,7 +226,7 @@ if (total >= 53.5 && total <= 63) {
 }
 
 document.getElementById('level').innerText = level;
-
+};
 
 
 
