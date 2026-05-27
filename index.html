@@ -14,7 +14,7 @@ table{width:100%;border-collapse:collapse;background:white;border-radius:10px;ov
 th{background:#1f6fb2;color:white;padding:8px}
 td{border-bottom:1px solid #ddd;padding:6px;vertical-align:top}
 tr:hover{background:#eef5ff}
-input{width:100%;padding:4px}
+input{width:100%;padding:10px}
 .link{background:#2b7de9;color:white;border:none;padding:4px 8px;border-radius:4px}
 .missing{background:#ffe5e5}
 .high{background:#e3f7e3}
@@ -103,7 +103,14 @@ let lastCat="";
  if(rowIndex===0){ firstCell=`<td rowspan="${d.rows.length}">${d.name}</td>`; }
  tr.innerHTML=`
  ${firstCell}
- <td><input value="${r.desc}" onchange="updateDesc(${i},${rowIndex},this.value)"></td>
+
+<td>
+<textarea rows="3" 
+  onchange="updateDesc(${i},${rowIndex},this.value)">
+${r.desc}
+</textarea>
+</td>
+
  <td id="l${i}_${rowIndex}"></td>
  <td><input class="score-input" type="number" min=0 max=10 step=0.5 value=${r.score} onchange="setScore(${i},${rowIndex},this.value)"></td>`;
  tb.appendChild(tr);
