@@ -32,12 +32,9 @@ th:last-child, td:last-child { width:80px; text-align:center; }
 <div class="container">
 <div class="dashboard">
 <div class="card">總分<br><b id="total"></b></div>
-<div class="card">達成率<br><b id="percent"></b>%</div>
 <div class="card">等級<br><b id="level"></b></div>
 </div>
 <div class="actions">
-<button onclick="save()">儲存</button>
-<button onclick="load()">載入</button>
 <button onclick="window.print()">列印</button>
 </div>
 <table>
@@ -216,9 +213,20 @@ let max = data.reduce((s,d,i)=>{
 
 let percent=Math.round(total/max*100||0);
  document.getElementById('total').innerText=total;
- document.getElementById('percent').innerText=percent;
- document.getElementById('level').innerText=
- percent>=85?'金牌':percent>=70?'銀牌':percent>=60?'銅牌':'未達標';}
+let level = '';
+if (total >= 53.5 && total <= 63) {
+  level = '通過';
+} else if (total >= 63.5 && total <= 74) {
+  level = '銅牌';
+} else if (total >= 74.5 && total <= 85) {
+  level = '銀牌';
+} else if (total >= 85.5) {
+  level = '金牌';
+} else {
+  level = '未達標';
+}
+
+document.getElementById('level').innerText = level;
 
 
 
