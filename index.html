@@ -203,7 +203,7 @@ window.setScore = function(i,rowIndex,v){
 
 
 
-function calc(){
+window.calc = function(){
 let total=0;
 data.forEach(d=>d.rows.forEach(r=>total+=r.score));
 let max = data.reduce((s,d,i)=>{
